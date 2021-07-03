@@ -14,8 +14,8 @@ const URL_API_STORE = (id, apiKey) => {
 
 const URL_STORE_PRODUCTS = (apiKey) => URL_API_STORE(2, apiKey);
 
-routes.get("/", async (req, res, next) => {
-  const apiKey = "1PGFAohDcXpnEar_mCoTLHXuLISmAvziR_UYSHd-GWWg";
+routes.post("/", async (req, res, next) => {
+  const apiKey = req.body.storeId;
 
   try {
     const response = await axios.get(URL_STORE_PRODUCTS(apiKey));
@@ -30,6 +30,12 @@ routes.get("/", async (req, res, next) => {
 routes.get("/hello", (req, res, next) => {
   return res.status(200).json({
     message: "Hello from path!",
+  });
+});
+
+routes.use(function (req, res, next) {
+  res.status(404).json({
+    message: "Not Found",
   });
 });
 

@@ -13,7 +13,7 @@ functions:
     events:
       - http:
           path: /store
-          method: get
+          method: post
       - http:
           path: /{proxy+}
           method: ANY
