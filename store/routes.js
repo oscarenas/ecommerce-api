@@ -1,7 +1,9 @@
 const express = require("express");
 const axios = require("axios");
 
-const routes = express.Router();
+const routes = express.Router({
+  mergeParams: true,
+});
 
 const URL_API_STORE = (id, apiKey) => {
   const tabId = `/${id}/`;
