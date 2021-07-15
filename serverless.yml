@@ -12,6 +12,7 @@ functions:
     handler: handler.handler
     events:
       - http:
+
           path: /store/products
           method: post
       - http:
