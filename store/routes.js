@@ -44,6 +44,33 @@ routes.post("/seo", async (req, res, next) => {
   }
 });
 
+routes.post("/products/filter", async (req, res) => {
+  const apiKey = req.body.storeId;
+  try {
+    const response = await axios.get(_fn.URL_STORE_PRODUCTS(apiKey));
+    res.status(200).json({
+      filterProducts: _fn.getFilterProducts(
+        response.data.feed.entry,
+        req.body.data.categories
+      ),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+routes.post("/products/id", async (req, res) => {
+  const apiKey = req.body.storeId;
+  try {
+    const response = await axios.get(_fn.URL_STORE_PRODUCTS(apiKey));
+    res.status(200).json({
+      product: _fn.getProductId(response.data.feed.entry, req.body.productId),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 routes.get("/hello", (req, res, next) => {
   return res.status(200).json({
     message: "Hello from path!",
