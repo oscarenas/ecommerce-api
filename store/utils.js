@@ -1,13 +1,18 @@
+const differenceBy = require("lodash/differenceBy");
+
 const COMMA_SPLIT = new RegExp("[,]", "g");
 
 const isPublished = (prod) => (prod === "TRUE" ? true : false);
 
-const capitalizeString = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+const capitalizeString = (value) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
 
 const priceToNumber = (price) => Number(price.replace(/[^0-9-]+/g, ""));
 
 const valueToBool = (value) =>
-  value === "TRUE" || value === "FALSE" ? JSON.parse(value.toLowerCase()) : value;
+  value === "TRUE" || value === "FALSE"
+    ? JSON.parse(value.toLowerCase())
+    : value;
 
 const validateValue = (value, key) => {
   let tmpValue;
@@ -53,19 +58,15 @@ const setInfo = (obj) => {
     "content",
     "link",
     "link",
-    "xmlns"
+    "xmlns",
   ];
 
   let item = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    if (key === "gsx$publicado") {
-      console.log("🚲");
-    }
     if (!skipValues.includes(key)) {
       item[`${formatKeyName(key)}`] = validateValue(value.$t, key);
     }
-
   }
   return item;
 };
@@ -86,38 +87,54 @@ const formatKeyName = (key) => {
 };
 
 const getProducts = (data) => {
-  return data.filter(data => {
-    if (isPublished(data.gsx$publicado.$t)) {
-      return data;
-    }
-  }).map(product => setInfo(product));
+  return data
+    .filter((data) => {
+      if (isPublished(data.gsx$publicado.$t)) {
+        return data;
+      }
+    })
+    .map((product) => setInfo(product));
 };
 
 const getBanners = (data) => {
-  return data.map(banner => setInfo(banner));
+  return data.map((banner) => setInfo(banner));
 };
 
 const getSeo = (data) => {
-  return data.map(banner => setInfo(banner));
+  return data.map((banner) => setInfo(banner));
 };
 
 const URL_API_STORE = (id, apiKey) => {
   const tabId = `/${id}/`;
-  return `${process.env.URL + apiKey + tabId + process.env.FORMAT + process.env.EXT
-    }`;
+  return `${
+    process.env.URL + apiKey + tabId + process.env.FORMAT + process.env.EXT
+  }`;
+};
+
+const getFilterProducts = (data, cat) => {
+  const products = getProducts(data);
+  return products.filter(
+    (item) => differenceBy(cat, item.categoria).length === 0
+  );
+};
+
+const getProductId = (data, id) => {
+  const prod = getProducts(data);
+  return prod.filter((item) => item.sku === id);
 };
 
 const URL_STORE_SEO = (apiKey) => URL_API_STORE(1, apiKey);
 const URL_STORE_PRODUCTS = (apiKey) => URL_API_STORE(2, apiKey);
 const URL_STORE_BANNERS = (apiKey) => URL_API_STORE(3, apiKey);
 
-
 module.exports = {
   getProducts,
   getBanners,
+  getFilterProducts,
   getSeo,
+  getProductId,
   URL_API_STORE,
   URL_STORE_PRODUCTS,
   URL_STORE_BANNERS,
-  URL_STORE_SEO
+  URL_STORE_SEO,
 };

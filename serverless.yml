@@ -12,13 +12,20 @@ functions:
     handler: handler.handler
     events:
       - http:
-          path: /products
+
+          path: /store/products
           method: post
       - http:
-          path: /banners
+          path: /store/banners
           method: post
       - http:
-          path: /seo
+          path: /store/seo
+          method: post
+      - http:
+          path: /store/products/filter
+          method: post
+      - http:
+          path: /store/products/id
           method: post
       - http:
           path: /{proxy+}
